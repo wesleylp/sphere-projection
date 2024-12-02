@@ -1,3 +1,8 @@
-# Region of interest for the circle detection
-# [(top-left), (bottom-right)] coordinates
-ROI = [(0, 0), (1280, 720)]
+PROGRAM_LABEL = "Depth Estimation"
+
+MAXRADIUS = 180
+MINRADIUS = 15
+
+
+BASE = [(0, 400), (640, 400), (430, 160), (280, 160)]
+RAIL = [(260, 480), (360, 480), (360, 150), (345, 150)]
