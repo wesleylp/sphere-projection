@@ -13,16 +13,41 @@ from estimate import (
     depth_estimate_from_radius,
 )
 from constants import MINRADIUS, MAXRADIUS, BASE, RAIL, PROGRAM_LABEL
+import threading
+
+# Variável global para armazenar a entrada do usuário
+user_input = None
+input_received = False  # Controle para verificar se o valor foi recebido
 
 cam = cv2.VideoCapture(0)
 
-if __name__ == "__main__":
 
+def get_user_input():
+    global user_input, input_received
+    user_input = float(
+        input("Enter the distance from the camera to the reference point in cm: ")
+    )
+    input_received = True
+
+
+def main():
+    global user_input, input_received
     depth_ref = None
+
+    if not cam.isOpened():
+        print("Error: Could not open the camera.")
+        return
+
+    # Inicia a thread para receber a entrada do usuário
+    # input_thread = threading.Thread(target=get_user_input, daemon=True)
+    # input_thread.start()
 
     while True:
 
         ret, frame = cam.read()
+        if not ret:
+            print("Erro ao capturar o quadro da webcam.")
+            break
 
         img = preprocessing(frame)
 
@@ -41,8 +66,7 @@ if __name__ == "__main__":
             # maximum image dimension.
         )
 
-        # TODO:
-        # Implement postprocessing to filter out false positives since we only
+        # postprocessing to filter out false positives since we only
         # want to detect one circle.
         circles = filter_circles(circles)
 
@@ -120,3 +144,7 @@ if __name__ == "__main__":
     cv2.destroyAllWindows()
 
     print("Done")
+
+
+if __name__ == "__main__":
+    main()
