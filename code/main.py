@@ -13,21 +13,8 @@ from estimate import (
     depth_estimate_from_radius,
 )
 from constants import MINRADIUS, MAXRADIUS, BASE, RAIL, PROGRAM_LABEL
-import threading
-
-# Variável global para armazenar a entrada do usuário
-user_input = None
-input_received = False  # Controle para verificar se o valor foi recebido
 
 cam = cv2.VideoCapture(0)
-
-
-def get_user_input():
-    global user_input, input_received
-    user_input = float(
-        input("Enter the distance from the camera to the reference point in cm: ")
-    )
-    input_received = True
 
 
 def main():
@@ -38,15 +25,11 @@ def main():
         print("Error: Could not open the camera.")
         return
 
-    # Inicia a thread para receber a entrada do usuário
-    # input_thread = threading.Thread(target=get_user_input, daemon=True)
-    # input_thread.start()
-
+    # loop de calibração
     while True:
-
         ret, frame = cam.read()
         if not ret:
-            print("Erro ao capturar o quadro da webcam.")
+            print("Error while tryng to capture frame from webcam.")
             break
 
         img = preprocessing(frame)
@@ -70,81 +53,135 @@ def main():
         # want to detect one circle.
         circles = filter_circles(circles)
 
-        frame = plot_circles_on_image(frame, circles)
+        if circles is not None and circles.shape[1] == 1:
+            frame = plot_circles_on_image(frame, circles)
+        else:
+            continue
 
         # Plot the limits of the base and rail
         frame = plot_limits(frame, BASE, color=(0, 0, 255), thickness=1)
         frame = plot_limits(frame, RAIL, color=(0, 0, 255), thickness=1)
 
-        if depth_ref is None:
-            cv2.imshow(PROGRAM_LABEL, frame)
+        key = cv2.waitKey(1)
+
+        if key == ord("q"):
+            break
+        if key == ord("c"):
+            # cv2.waitKey(0)
             depth_ref = float(
                 input(
                     "Enter the distance from the camera to the reference point in cm: "
                 )
             )
-            radius_ref = circles[0][0][2]
-            area_ref = compute_circle_area(circles[0][0][2])
+            if circles is not None and len(circles) > 0:
+                radius_ref = circles[0][0][2]
+                area_ref = compute_circle_area(radius_ref)
+                print(
+                    f"Reference radius: {radius_ref:.2f}, Reference area: {area_ref:.2f}"
+                )
+        if key == ord("p"):
+            cv2.waitKey(0)
 
-        depth_estimate_rad = depth_estimate_from_radius(
-            circles[0][0][2], radius_ref, depth_ref
-        )
+        if depth_ref is not None:
 
-        area_circle = compute_circle_area(circles[0][0][2])
-        depth_estimate_a = depth_estimate_from_area(area_circle, area_ref, depth_ref)
+            depth_estimate_rad = depth_estimate_from_radius(
+                circles[0][0][2], radius_ref, depth_ref
+            )
+
+            area_circle = compute_circle_area(circles[0][0][2])
+            depth_estimate_a = depth_estimate_from_area(
+                area_circle,
+                area_ref,
+                depth_ref,
+            )
+
+            cv2.putText(
+                frame,
+                f"Radius estimate : {circles[0][0][2]:.2f} pixels",
+                (10, 30),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.7,
+                (0, 255, 0),
+                2,
+            )
+
+            cv2.putText(
+                frame,
+                f"Area estimate : {area_circle:.2f} pixels",
+                (10, 60),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.7,
+                (0, 255, 0),
+                2,
+            )
+
+            cv2.putText(
+                frame,
+                f"Depth estimate from radius: {depth_estimate_rad:.2f} cm",
+                (10, 90),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.7,
+                (0, 255, 0),
+                2,
+            )
+
+            cv2.putText(
+                frame,
+                f"Depth estimate from area: {depth_estimate_a:.2f} cm",
+                (10, 120),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.7,
+                (0, 255, 0),
+                2,
+            )
+
+        if depth_ref is None:
+            cv2.putText(
+                frame,
+                "Waiting for calibration...",
+                (10, 30),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.7,
+                (0, 255, 0),
+                2,
+            )
 
         cv2.putText(
             frame,
-            f"Radius estimate : {circles[0][0][2]:.2f} pixels",
-            (10, 30),
+            "Press 'c' for calibration...",
+            (10, 410),
             cv2.FONT_HERSHEY_SIMPLEX,
-            0.7,
+            0.5,
             (0, 255, 0),
             2,
         )
-
         cv2.putText(
             frame,
-            f"Area estimate : {area_circle:.2f} pixels",
-            (10, 60),
+            "Press 'p' for pause/unpause...",
+            (10, 440),
             cv2.FONT_HERSHEY_SIMPLEX,
-            0.7,
-            (0, 255, 0),
-            2,
-        )
-
-        cv2.putText(
-            frame,
-            f"Depth estimate from radius: {depth_estimate_rad:.2f} cm",
-            (10, 90),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.7,
+            0.5,
             (0, 255, 0),
             2,
         )
         cv2.putText(
             frame,
-            f"Depth estimate from area: {depth_estimate_a:.2f} cm",
-            (10, 120),
+            "Press 'q' for quit...",
+            (10, 470),
             cv2.FONT_HERSHEY_SIMPLEX,
-            0.7,
+            0.5,
             (0, 255, 0),
             2,
         )
 
         cv2.imshow(PROGRAM_LABEL, frame)
 
-        # Press 'q' to exit the loop
-        if cv2.waitKey(1) == ord("q"):
-            break
-
     # Release the capture and writer objects
     cam.release()
     # out.release()
     cv2.destroyAllWindows()
 
-    print("Done")
-
 
 if __name__ == "__main__":
     main()
+    print("Done")
