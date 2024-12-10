@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from constants import BASE, RAIL
+from constants import RAIL
 
 
 def preprocessing(img):

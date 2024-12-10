@@ -1,5 +1,4 @@
 import cv2
-import numpy as np
 from image_processing import (
     preprocessing,
     detect_circles,
@@ -18,12 +17,11 @@ cam = cv2.VideoCapture(0)
 
 
 def main():
-    global user_input, input_received
-    depth_ref = None
-
     if not cam.isOpened():
         print("Error: Could not open the camera.")
         return
+
+    depth_ref = None
 
     # loop de calibração
     while True:
