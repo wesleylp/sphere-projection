@@ -11,13 +11,13 @@ To get started with Sphere Projection, follow these simple steps:
    git clone https://github.com/wesleylp/sphere-projection.git
    cd sphere-projection
    ```
-2. **Set up a Python virtual environment (optional but recommended):**
+2. **Set up a Python (3.11+) virtual environment (optional but recommended):**
    ```bash
    # Here is an example using venv, but you can also use conda or other.
    python -m venv venv
    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-   ```
-3. **Install the package:**
+   ``
+3. **Install the requirements:**
    ```bash
    pip install -r requirements.txt
    ```
