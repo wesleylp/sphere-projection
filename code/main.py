@@ -105,28 +105,8 @@ def main():
 
             cv2.putText(
                 frame,
-                f"Area estimate : {area_circle:.2f} pixels",
-                (10, 60),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.7,
-                (0, 255, 0),
-                2,
-            )
-
-            cv2.putText(
-                frame,
                 f"Depth estimate from radius: {depth_estimate_rad:.2f} cm",
-                (10, 90),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.7,
-                (0, 255, 0),
-                2,
-            )
-
-            cv2.putText(
-                frame,
-                f"Depth estimate from area: {depth_estimate_a:.2f} cm",
-                (10, 120),
+                (10, 60),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.7,
                 (0, 255, 0),
