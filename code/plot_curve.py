@@ -4,15 +4,18 @@ import pandas as pd
 import seaborn as sns
 import numpy as np
 
-sns.set_theme(font_scale=1.5, rc={"text.usetex": True})
+sns.set_theme(font_scale=1.7, rc={"text.usetex": True})
 sns.set_style("white")
 
 this_filepath = os.path.abspath(__file__)
+
+language = "pt-br"
 
 # Load data
 datapath = os.path.join(os.path.dirname(this_filepath), "..", "data", "results.xls")
 
 references = [10, 50, 80]
+
 
 frames = []
 for ref in references:
@@ -61,9 +64,14 @@ plt.plot(
     x_values, x_values, "-", color=(0.5, 0.5, 0.5), label="y = x"
 )  # Plot the reference line y = x in gray
 
-plt.xlabel(r"Real depth $z$[cm]")
-plt.ylabel(r"Mean depth estimate $\hat{z}$ [cm]")
-plt.legend(title=r"Reference ($z^\ast$)")
+if language == "pt-br":
+    plt.xlabel(r"Profundidade real $z$[cm]")
+    plt.ylabel(r"Média da estimativa de profundidade $\hat{z}$ [cm]")
+    plt.legend(title=r"Referência ($z^\ast$)")
+else:
+    plt.xlabel(r"Real depth $z$[cm]")
+    plt.ylabel(r"Mean depth estimate $\hat{z}$ [cm]")
+    plt.legend(title=r"Reference ($z^\ast$)")
 plt.grid(True, linestyle="--", linewidth=0.5)
 plt.xlim(5, 85)
 plt.ylim(5, 85)
@@ -72,7 +80,7 @@ plt.ylim(5, 85)
 # plt.gca().set_xscale("log")
 # plt.gca().set_yscale("log")
 
-plt.savefig("trend_mean_estimate.png", dpi=300, bbox_inches="tight")
+plt.savefig(f"trend_mean_estimate_{language}.png", dpi=300, bbox_inches="tight")
 plt.show()
 ####
 
@@ -92,11 +100,16 @@ for reference in references:
     )
 
 # plt.title("Trend of Difference Between Real and Read Values by Data Source")
-plt.xlabel(r"Real depth $z$[cm]")
-plt.ylabel(r"Mean absolute error (MAE) $|z-\hat{z}|$ [cm]")
-plt.legend(title=r"Reference ($z^\ast$)")
+if language == "pt-br":
+    plt.xlabel(r"Profundidade real $z$[cm]")
+    plt.ylabel(r"Média do erro absoluto (MAE) $|z-\hat{z}|$ [cm]")
+    plt.legend(title=r"Referência ($z^\ast$)")
+else:
+    plt.xlabel(r"Real depth $z$[cm]")
+    plt.ylabel(r"Mean absolute error (MAE) $|z-\hat{z}|$ [cm]")
+    plt.legend(title=r"Reference ($z^\ast$)")
 plt.grid(True, linestyle="--", linewidth=0.5)
-plt.savefig("trend_mean_abs_error.png", dpi=300, bbox_inches="tight")
+plt.savefig(f"trend_mean_abs_error_{language}.png", dpi=300, bbox_inches="tight")
 plt.show()
 ####
 
@@ -113,11 +126,16 @@ ax = sns.barplot(
 )
 
 # plt.title("Mean absolute error between Real and Estimates Measures")
-plt.xlabel(r"Real depth $z$ [cm]")
-plt.ylabel(r"Mean absolute error (MAE) $|z-\hat{z}|$ [cm]")
-plt.legend(title=r"Reference ($z^\ast$)")
+if language == "pt-br":
+    plt.xlabel(r"Profundidade real $z$ [cm]")
+    plt.ylabel(r"Média do erro absoluto (MAE) $|z-\hat{z}|$ [cm]")
+    plt.legend(title=r"Referência ($z^\ast$)")
+else:
+    plt.xlabel(r"Real depth $z$ [cm]")
+    plt.ylabel(r"Mean absolute error (MAE) $|z-\hat{z}|$ [cm]")
+    plt.legend(title=r"Reference ($z^\ast$)")
 plt.grid(True, linestyle="--", linewidth=0.5)
-plt.savefig("mean_abs_error.png", dpi=300, bbox_inches="tight")
+plt.savefig(f"mean_abs_error_{language}.png", dpi=300, bbox_inches="tight")
 plt.show()
 
 
