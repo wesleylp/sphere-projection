@@ -4,11 +4,15 @@ import pandas as pd
 import seaborn as sns
 
 
-sns.set_theme(font_scale=1.7, rc={"text.usetex": True})
+# sns.set_theme(font_scale=1.7, rc={"text.usetex": True})
 sns.set_style("white")
 this_filepath = os.path.abspath(__file__)
 
-logging_filepath = os.path.join(os.path.dirname(this_filepath), "..", "logging.txt")
+logging_filepath = os.path.join(
+    os.path.dirname(this_filepath),
+    "..",
+    "logging_trilho_acelerado1743623025.8807564.txt",
+)
 
 
 with open(logging_filepath, "r") as f:
@@ -42,7 +46,7 @@ plt.plot(df["timestamp"], df["x"], label="x", color="blue", marker="o")
 plt.plot(df["timestamp"], df["y"], label="y", color="green", marker="o")
 plt.plot(df["timestamp"], df["r"], label="r", color="red", marker="o")
 plt.xlabel("Timestamp (ms)")
-plt.ylabel("Value")
+plt.ylabel("pixels")
 plt.title("Position and Radius Over Time")
 plt.legend()
 plt.grid()

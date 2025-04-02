@@ -10,7 +10,7 @@ from image_processing import (
 
 from constants import MINRADIUS, MAXRADIUS, PROGRAM_LABEL
 
-cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(2)  # change to 0 for the default camera
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
         print("Error: Could not open the camera.")
         return
 
-    file = open("logging.txt", "w")
+    file = open(f"logging_trilho_acelerado{time.time()}.txt", "w")
     file.write("timestamp\tx\ty\tr\n")
 
     # loop de calibração
@@ -47,7 +47,7 @@ def main():
 
         # postprocessing to filter out false positives since we only
         # want to detect one circle.
-        # circles = filter_circles(circles)
+        circles = filter_circles(circles)
 
         if circles is not None and circles.shape[1] == 1:
             x, y, r = circles[0, 0, :]
